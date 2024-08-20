@@ -13,9 +13,7 @@ function App() {
     }
   };
   useEffect(() => {
-    
     window.addEventListener("keydown", handleKeyDown);
-    console.log("render~");
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
