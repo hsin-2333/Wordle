@@ -1,65 +1,72 @@
 import { useReducer } from "react";
+import { ACTIONS } from "./Actions";
 
+export const WordReducer = (state, action) => {
+  switch (action.type) {
+    //互動行為
+    case ACTIONS.INPUT_LETTER: {
+    //   const updatedGrid = [...state.grid];
+    const updatedGrid = JSON.parse(JSON.stringify(state.grid));
+      const { currentRow, currentCol } = state; //從state中提取currentRow和currentCol屬性
 
-// const initialState = {
-    // alphabet: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J",
-    //             "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T",
-    //             "U", "V", "W", "X", "Y", "Z"],
-//     wrongGuess: [],
-//     rightGuess: []
-// };
+      if (updatedGrid[currentRow].every((letter) => letter !== "")) {
+        console.log("currentRow", currentRow);
+        console.log("滿了的currentCol", currentCol);
+        return {
+          ...state,
+        };
+      } else {
+        // const newCol = (currentCol + 1) % updatedGrid[currentRow].length;
+        const newCol = currentCol + 1;
+        const newRow = newCol === 0 && currentRow < updatedGrid.length - 1 ? currentRow + 1 : currentRow;
 
-// const initialState = {
-//     grid: Array(6).fill().map(()=>Array(5).fill({value:'', status:letterStatus.idle})),
-//     alphabet: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J",
-//         "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T",
-//         "U", "V", "W", "X", "Y", "Z"],
-//     currentGuess: 0,
-//     guess: [],
-//     answer: "APPLE",
-// }
+        if (currentCol < updatedGrid[currentRow].length) {
+            console.log("currentCol", currentCol);
+            console.log("action.letter", action.letter);
 
-// const letterStatus = {
-//     idle: "idle", 
-//     wrong: "wrong",
-//     correct: "correct",
-//     guess: "guess"
-// };
+          updatedGrid[currentRow][currentCol] = action.letter;
+        }
+        console.log("updatedGrid", updatedGrid);
+        console.log("輸入的currentCol", currentCol);
 
-// const colorMap = {
-//     [letterStatus.idle]: "bg-slate-300", 
-//     [letterStatus.wrong]: "bg-lime-500",
-//     [letterStatus.correct]: "bg-amber-400",
-//     [letterStatus.guess]: "border-solid border-2 border-amber-400"
-// };
-
-
-function WordReducer (state, action){
-    switch(action.type){
-
-        //互動行為
-        case "inputLetter":
-            return{}
-        case "deleteLetter":
-            return{}
-        case "submitGuess":
-            return{
-                //判斷單字是否在清單中
-                //正確: 判斷
-            }
-        case "resetGame":
-            return{}
-
-        default:
-            return state
+        return {
+          ...state,
+          grid: updatedGrid,
+          currentRow: newRow,
+          currentCol: newCol,
+        };
+      }
     }
+    case ACTIONS.DELETE_LETTER: {
+    //   const updatedGrid = [...state.grid];
+      const updatedGrid =  JSON.parse(JSON.stringify(state.grid));
+      const { currentRow } = state;
+    //   console.log("刪除的currentCol", currentCol);
+      //   let newCol = currentCol === 0 ? 0 : currentCol - 1;
+      //   const newCol = currentCol > 0 ? currentCol - 1 : 0;
+      //   updatedGrid[currentRow][currentCol] = "";
+      //   console.log("刪除的newCol", newCol);
 
-}
-export const WordSheet = () => {
-    const [state, dispatch] = useReducer(WordReducer, action) 
-
-    return (
-        <>
-        </>
-    )
+      let lastFilledCol = -1;
+      for (let i = 0; i < updatedGrid[currentRow].length; i++) {
+        if (updatedGrid[currentRow][i] !== "") {
+          lastFilledCol = i;
+        }
+      }
+      if(lastFilledCol != -1){
+        console.log("lastFilledCol", lastFilledCol);
+        updatedGrid[currentRow][lastFilledCol] = "";
+      }
+    
+        
+      const newCol = lastFilledCol > 0 ? lastFilledCol : 0;
+      return {
+        ...state,
+        grid: updatedGrid,
+        currentCol: newCol,
+      };
+    }
+    default:
+      return state;
+  }
 };
