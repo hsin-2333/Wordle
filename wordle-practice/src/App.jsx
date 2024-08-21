@@ -1,12 +1,12 @@
 import "./App.css";
 import PropTypes from "prop-types";
 import { useEffect, useReducer } from "react";
-import { WordReducer } from "./WordReducer";
+import { wordReducer } from "./WordReducer";
 import { letterStatus, colorStatus } from "./constants/constant";
 
 
 function App() {
-  const [state, dispatch] = useReducer(WordReducer, initialState);
+  const [state, dispatch] = useReducer(wordReducer, initialState);
 
   const handleRestart = () => {
     dispatch({ type: "RESET" });
