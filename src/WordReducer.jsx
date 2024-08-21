@@ -1,6 +1,19 @@
 import { ACTIONS } from "./Actions";
 import { letterStatus } from "./constants/constant";
 
+export const initialState = {
+  grid: Array(6)
+    .fill()
+    .map(() => Array(5).fill("")),
+  statusGrid: Array(6)
+    .fill()
+    .map(() => Array(5).fill(letterStatus.idle)),
+  currentRow: 0,
+  currentCol: 0,
+  answer: "",
+  gameStatus: 0, //0: playing, 1: win, 2: lose
+};
+
 export const wordReducer = (state, action) => {
   switch (action.type) {
     case ACTIONS.INPUT_LETTER: {
@@ -8,7 +21,7 @@ export const wordReducer = (state, action) => {
       const { currentRow, currentCol } = state;
 
       if (updatedGrid[currentRow].every((letter) => letter !== "")) {
-        return state; 
+        return state;
       }
 
       const newCol = currentCol + 1;
@@ -23,7 +36,6 @@ export const wordReducer = (state, action) => {
         currentRow: newRow,
         currentCol: newCol,
       };
-
     }
     case ACTIONS.DELETE_LETTER: {
       const updatedGrid = JSON.parse(JSON.stringify(state.grid));
@@ -60,13 +72,11 @@ export const wordReducer = (state, action) => {
               } else if (answerArray.includes(cell)) {
                 return letterStatus.correctLetter;
               }
-                
+
               return letterStatus.wrong;
-              
             });
           }
           return row;
-          
         });
         const isCorrect = updatedGrid[currentRow].join("") === state.answer;
         if (isCorrect) {
@@ -89,27 +99,27 @@ export const wordReducer = (state, action) => {
           currentCol: 0,
         };
       }
-      return state; 
+      return state;
     }
-    case ACTIONS.RESET:{
-      return{
+    case ACTIONS.RESET: {
+      return {
         ...state,
         grid: Array(6)
-        .fill()
-        .map(() => Array(5).fill("")),
-      statusGrid: Array(6)
-        .fill()
-        .map(() => Array(5).fill(letterStatus.idle)),
+          .fill()
+          .map(() => Array(5).fill("")),
+        statusGrid: Array(6)
+          .fill()
+          .map(() => Array(5).fill(letterStatus.idle)),
         currentRow: 0,
         currentCol: 0,
         gameStatus: 0,
-      }
+      };
     }
-    case ACTIONS.SET_ANSWER:{
-      return{
+    case ACTIONS.SET_ANSWER: {
+      return {
         ...state,
-        answer: action.answer
-      }
+        answer: action.answer,
+      };
     }
     default:
       return state;

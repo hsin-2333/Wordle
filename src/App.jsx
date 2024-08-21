@@ -4,19 +4,22 @@ import { db } from "../firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 
 import { useEffect, useReducer } from "react";
-import { wordReducer } from "./WordReducer";
-import { letterStatus, colorStatus } from "./constants/constant";
-
+import { initialState, wordReducer } from "./WordReducer";
+import { colorStatus } from "./constants/constant";
 
 function App() {
-  const [state, dispatch] = useReducer(wordReducer, initialState, init);
+  const [state, dispatch] = useReducer(wordReducer, initialState);
 
-  const setAnswer = (answer) =>{
+  const setAnswer = (answer) => {
     dispatch({ type: "SET_ANSWER", answer });
   };
 
   const handleRestart = () => {
     dispatch({ type: "RESET" });
+    getAnswer().then((answer) => {
+      console.log("設定答案 =", answer);
+      setAnswer(answer);
+    });
   };
 
   useEffect(() => {
@@ -34,30 +37,33 @@ function App() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-
-
   }, [state.gameStatus]);
 
-  useEffect(()=>{
+  useEffect(() => {
     getAnswer().then((answer) => {
       console.log("設定答案 =", answer);
       setAnswer(answer);
     });
-  },[state.gameStatus]);
+  }, []);
 
   return (
     <>
       <Grid className="text-3xl" grid={state.grid} statusGrid={state.statusGrid} />
-      {state.gameStatus != 0 ? (
+      {state.gameStatus !== 0 && (
         <div className="absolute flex flex-col gap-6 justify-center	align-center top-0 w-full	h-full backdrop-grayscale-0 bg-black/60 ...">
           <div className=" game-font self-stretch text-8xl text-white">Game Over</div>
-          
-          <div className="game-font text-4xl text-white" >{state.gameStatus === 2? "Maybe Try Again": "You Win!🎉🎉"}</div>
-          <button onClick={handleRestart} className=" game-font mx-auto	 w-24 h-11 text-xl text-black border-slate-500 bg-white rounded-xl">
+
+          <div className="game-font text-4xl text-white">
+            {state.gameStatus === 2 ? "Maybe Try Again" : "You Win!🎉🎉"}
+          </div>
+          <button
+            onClick={handleRestart}
+            className=" game-font mx-auto	 w-24 h-11 text-xl text-black border-slate-500 bg-white rounded-xl"
+          >
             Retry
           </button>
         </div>
-      ): null}
+      )}
     </>
   );
 }
@@ -78,41 +84,19 @@ Grid.propTypes = {
   statusGrid: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)).isRequired,
 };
 
-const Cell = ({ value, status }) => <div className={`cell ${colorStatus[status]}`}>{value}</div>;
+const Cell = ({ value, status }) => <div className={colorStatus[status]}>{value}</div>;
 Cell.propTypes = {
   value: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
 };
 
-const initialState = {
-  grid: Array(6)
-    .fill()
-    .map(() => Array(5).fill("")),
-  statusGrid: Array(6)
-    .fill()
-    .map(() => Array(5).fill(letterStatus.idle)),
-  currentRow: 0,
-  currentCol: 0,
-  answer: "",
-  gameStatus: 0, //0: playing, 1: win, 2: lose
-};
-
-
-const init = (initialState) => {
-  return {
-    ...initialState,
-    answer: getAnswer() // 从某个函数中动态获取答案
-  };
-};
-
-
 const getAnswer = async () => {
   try {
     const querySnapshot = await getDocs(collection(db, "answers"));
     const answerArray = [];
-    querySnapshot.forEach((doc)=>{
+    querySnapshot.forEach((doc) => {
       answerArray.push(doc.data().answer);
-    })
+    });
     const TodayAnswer = answerArray[Math.floor(Math.random() * answerArray.length)];
     return TodayAnswer.toUpperCase();
   } catch (e) {
