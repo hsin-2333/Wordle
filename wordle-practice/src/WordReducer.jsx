@@ -1,14 +1,14 @@
 import { ACTIONS } from "./Actions";
 import { letterStatus } from "./constants/constant";
 
-export const WordReducer = (state, action) => {
+export const wordReducer = (state, action) => {
   switch (action.type) {
     case ACTIONS.INPUT_LETTER: {
       const updatedGrid = JSON.parse(JSON.stringify(state.grid));
       const { currentRow, currentCol } = state;
 
       if (updatedGrid[currentRow].every((letter) => letter !== "")) {
-        return state; //要更新 state 再使用解構 ...state
+        return state; 
       }
 
       const newCol = currentCol + 1;
@@ -89,7 +89,7 @@ export const WordReducer = (state, action) => {
           currentCol: 0,
         };
       }
-      return state; //要更新 state 再解構
+      return state; 
     }
     case ACTIONS.RESET:{
       return{
