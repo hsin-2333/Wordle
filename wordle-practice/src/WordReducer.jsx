@@ -1,9 +1,9 @@
 import { useReducer } from "react";
 import { ACTIONS } from "./Actions";
+import { letterStatus, colorStatus } from "./constants/constant";
 
 export const WordReducer = (state, action) => {
   switch (action.type) {
-    //互動行為
     case ACTIONS.INPUT_LETTER: {
       //   const updatedGrid = [...state.grid];
       const updatedGrid = JSON.parse(JSON.stringify(state.grid));
@@ -47,6 +47,59 @@ export const WordReducer = (state, action) => {
         ...state,
         grid: updatedGrid,
         currentCol: newCol,
+      };
+    }
+    case ACTIONS.SUBMIT_GUESS: {
+      const updatedGrid = JSON.parse(JSON.stringify(state.grid));
+      const updatedStatusGrid = JSON.parse(JSON.stringify(state.statusGrid));
+
+      const { currentRow } = state;
+      const answerArray = state.answer.split("");
+      if (updatedGrid[currentRow].every((letter) => letter !== "")) {
+        const newStatusGrid = updatedStatusGrid.map((row, rowIndex) => {
+          if (rowIndex === currentRow) {
+            return updatedGrid[rowIndex].map((cell, colIndex) => {
+              if (cell === answerArray[colIndex]) {
+                return letterStatus.correct;
+              } else if (answerArray.includes(cell)) {
+                return letterStatus.correctLetter;
+              } else {
+                return letterStatus.wrong;
+              }
+            });
+          } else {
+            return row;
+          }
+        });
+        const isCorrect = updatedGrid[currentRow].join("") === state.answer;
+        if (isCorrect) {
+          setTimeout(()=>{
+            alert("恭喜猜對了");
+          },400)
+          return {
+            ...state,
+            statusGrid: newStatusGrid,
+            gameStatus: 1,
+          };
+        } else if(currentRow === updatedGrid.length -1){
+          setTimeout(()=>{
+            alert("QAQ 猜錯了");
+          },400)
+          return {
+            ...state,
+            statusGrid: newStatusGrid,
+            gameStatus: 2,
+          };
+        }
+        return {
+          ...state,
+          statusGrid: newStatusGrid,
+          currentRow: currentRow + 1,
+          currentCol: 0,
+        };
+      }
+      return {
+        ...state,
       };
     }
     default:

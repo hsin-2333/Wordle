@@ -1,15 +1,18 @@
 import "./App.css";
 import React, { useEffect, useReducer } from "react";
 import { WordReducer } from "./WordReducer";
+import { letterStatus, colorStatus } from "./constants/constant";
 
 function App() {
   const [state, dispatch] = useReducer(WordReducer, initialState);
   const handleKeyDown = (e) => {
     const { key } = e;
-    if (key.length === 1 && /^[A-Z]$/i.test(key)) {
+    if (key.length === 1 && /^[A-Z]$/i.test(key) && state.gameStatus === 0) {
       dispatch({ type: "INPUT_LETTER", letter: key.toUpperCase() });
     } else if (key === "Backspace") {
       dispatch({ type: "DELETE_LETTER" });
+    } else if (key === "Enter") {
+      dispatch({ type: "SUBMIT_GUESS" });
     }
   };
   useEffect(() => {
@@ -40,32 +43,17 @@ const Grid = ({ grid, statusGrid }) => {
 
 const Cell = ({ value, status }) => <div className={`cell ${colorStatus[status]}`}>{value}</div>;
 
-const letterStatus = {
-  idle: "idle",
-  typing: "typing",
-  wrong: "wrong",
-  correct: "correct",
-  guess: "guess",
-};
-
-const colorStatus = {
-  [letterStatus.idle]: " w-14 h-14 border-2 border-slate-300 bg-white text-3xl	font-black leading-14",
-  [letterStatus.typing]: "w-14 h-14 border-2 border-slate-500 bg-white text-3xl	font-black leading-14 text-black	",
-  [letterStatus.wrong]: "w-14 h-14 bg-zinc-500	text-3xl font-black leading-14 text-white		",
-  [letterStatus.correct]: "w-14 h-14 bg-lime-500	text-3xl font-black leading-14 text-white	",
-  [letterStatus.correctLetter]: "w-14 h-14  bg-yellow-400	text-3xl font-black leading-14 text-white	",
-};
-
 const initialState = {
   grid: Array(6)
     .fill()
-    .map(() => Array(5).fill("")), // 只存 value
+    .map(() => Array(5).fill("")), 
   statusGrid: Array(6)
     .fill()
-    .map(() => Array(5).fill(letterStatus.idle)), // 存 status
+    .map(() => Array(5).fill(letterStatus.idle)), 
   currentRow: 0,
   currentCol: 0,
   answer: "APPLE",
+  gameStatus: 0, //0: playing, 1: win, 2: lose
 };
 
 export default App;
