@@ -1,5 +1,6 @@
 import { ACTION } from "./constants/ACTION";
 import { LETTER } from "./constants/LETTER";
+import { GAME_STATUS } from "./constants/GAMESTATUS";
 
 export const initialState = {
   grid: Array(6)
@@ -11,7 +12,7 @@ export const initialState = {
   currentRow: 0,
   currentCol: 0,
   answer: "",
-  gameStatus: 0, //0: playing, 1: win, 2: lose
+  gameStatus: GAME_STATUS.PLAYING,
 };
 
 export const wordReducer = (state, action) => {
@@ -83,13 +84,13 @@ export const wordReducer = (state, action) => {
           return {
             ...state,
             statusGrid: newStatusGrid,
-            gameStatus: 1,
+            gameStatus: GAME_STATUS.WIN,
           };
         } else if (currentRow === updatedGrid.length - 1) {
           return {
             ...state,
             statusGrid: newStatusGrid,
-            gameStatus: 2,
+            gameStatus: GAME_STATUS.LOSE,
           };
         }
         return {
@@ -112,7 +113,7 @@ export const wordReducer = (state, action) => {
           .map(() => Array(5).fill(LETTER.IDLE)),
         currentRow: 0,
         currentCol: 0,
-        gameStatus: 0,
+        gameStatus: GAME_STATUS.PLAYING,
       };
     }
     case ACTION.SET_ANSWER: {

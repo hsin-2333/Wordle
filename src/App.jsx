@@ -6,6 +6,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { useEffect, useReducer } from "react";
 import { initialState, wordReducer } from "./WordReducer";
 import { COLOR } from "./constants/COLOR";
+import { GAME_STATUS } from "./constants/GAMESTATUS";
 
 function App() {
   const [state, dispatch] = useReducer(wordReducer, initialState);
@@ -25,11 +26,11 @@ function App() {
   useEffect(() => {
     const handleKeyDown = (e) => {
       const { key } = e;
-      if (key.length === 1 && /^[A-Z]$/i.test(key) && state.gameStatus === 0) {
+      if (key.length === 1 && /^[A-Z]$/i.test(key) && state.gameStatus === GAME_STATUS.PLAYING) {
         dispatch({ type: "INPUT_LETTER", letter: key.toUpperCase() });
-      } else if (key === "Backspace" && state.gameStatus === 0) {
+      } else if (key === "Backspace" && state.gameStatus === GAME_STATUS.PLAYING0) {
         dispatch({ type: "DELETE_LETTER" });
-      } else if (key === "Enter" && state.gameStatus === 0) {
+      } else if (key === "Enter" && state.gameStatus === GAME_STATUS.PLAYING) {
         dispatch({ type: "SUBMIT_GUESS" });
       }
     };
@@ -49,12 +50,12 @@ function App() {
   return (
     <>
       <Grid className="text-3xl" grid={state.grid} statusGrid={state.statusGrid} />
-      {state.gameStatus !== 0 && (
+      {state.gameStatus !== GAME_STATUS.PLAYING && (
         <div className="absolute flex flex-col gap-6 justify-center	align-center top-0 w-full	h-full backdrop-grayscale-0 bg-black/60 ...">
           <div className=" game-font self-stretch text-8xl text-white">Game Over</div>
 
           <div className="game-font text-4xl text-white">
-            {state.gameStatus === 2 ? "Maybe Try Again" : "You Win!🎉🎉"}
+            {state.gameStatus === GAME_STATUS.LOSE ? "Maybe Try Again" : "You Win!🎉🎉"}
           </div>
           <button
             onClick={handleRestart}

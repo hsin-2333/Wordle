@@ -7,13 +7,3 @@ export const COLOR = {
   [LETTER.CORRECT]: "w-14 h-14 bg-lime-500	text-3xl font-black leading-14 text-white	",
   [LETTER.CORRECT_LETTER]: "w-14 h-14  bg-yellow-400	text-3xl font-black leading-14 text-white	",
 };
-
-//gamesStatus 也整理到這裡
-
-//把所有constant分類到一起， 各個constant分開
-
-// ACTION
-// COLOR
-// LETTER
-
-// 狀態大小寫統一
