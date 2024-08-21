@@ -24,6 +24,17 @@ function App() {
     };
   }, [state.gameStatus]);
 
+  useEffect(() => {
+    if (state.gameStatus === 1) {
+      setTimeout(() => {
+        alert("恭喜猜對了");
+      }, 400);
+    } else if (state.gameStatus === 2) {
+      setTimeout(() => {
+        alert("QAQ 猜錯了");
+      }, 400);
+    }
+  }, [state.gameStatus]);
   return (
     <>
       <Grid className="text-3xl" grid={state.grid} statusGrid={state.statusGrid} />

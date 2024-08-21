@@ -1,35 +1,31 @@
-import { useReducer } from "react";
 import { ACTIONS } from "./Actions";
-import { letterStatus, colorStatus } from "./constants/constant";
+import { letterStatus } from "./constants/constant";
 
 export const WordReducer = (state, action) => {
   switch (action.type) {
     case ACTIONS.INPUT_LETTER: {
-      //   const updatedGrid = [...state.grid];
       const updatedGrid = JSON.parse(JSON.stringify(state.grid));
       const { currentRow, currentCol } = state;
 
       if (updatedGrid[currentRow].every((letter) => letter !== "")) {
-        return {
-          ...state,
-        };
-      } else {
-        const newCol = currentCol + 1;
-        const newRow = newCol === 0 && currentRow < updatedGrid.length - 1 ? currentRow + 1 : currentRow;
-
-        if (currentCol < updatedGrid[currentRow].length) {
-          updatedGrid[currentRow][currentCol] = action.letter;
-        }
-        return {
-          ...state,
-          grid: updatedGrid,
-          currentRow: newRow,
-          currentCol: newCol,
-        };
+        return state; //要更新 state 再使用解構 ...state
       }
+
+      const newCol = currentCol + 1;
+      const newRow = newCol === 0 && currentRow < updatedGrid.length - 1 ? currentRow + 1 : currentRow;
+
+      if (currentCol < updatedGrid[currentRow].length) {
+        updatedGrid[currentRow][currentCol] = action.letter;
+      }
+      return {
+        ...state,
+        grid: updatedGrid,
+        currentRow: newRow,
+        currentCol: newCol,
+      };
+
     }
     case ACTIONS.DELETE_LETTER: {
-      //   const updatedGrid = [...state.grid];
       const updatedGrid = JSON.parse(JSON.stringify(state.grid));
       const { currentRow } = state;
       let lastFilledCol = -1;
@@ -63,28 +59,23 @@ export const WordReducer = (state, action) => {
                 return letterStatus.correct;
               } else if (answerArray.includes(cell)) {
                 return letterStatus.correctLetter;
-              } else {
-                return letterStatus.wrong;
               }
+                
+              return letterStatus.wrong;
+              
             });
-          } else {
-            return row;
           }
+          return row;
+          
         });
         const isCorrect = updatedGrid[currentRow].join("") === state.answer;
         if (isCorrect) {
-          setTimeout(()=>{
-            alert("恭喜猜對了");
-          },400)
           return {
             ...state,
             statusGrid: newStatusGrid,
             gameStatus: 1,
           };
-        } else if(currentRow === updatedGrid.length -1){
-          setTimeout(()=>{
-            alert("QAQ 猜錯了");
-          },400)
+        } else if (currentRow === updatedGrid.length - 1) {
           return {
             ...state,
             statusGrid: newStatusGrid,
@@ -98,9 +89,7 @@ export const WordReducer = (state, action) => {
           currentCol: 0,
         };
       }
-      return {
-        ...state,
-      };
+      return state; //要更新 state 再解構
     }
     default:
       return state;
