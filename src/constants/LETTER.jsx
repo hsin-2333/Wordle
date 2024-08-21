@@ -1,0 +1,7 @@
+export const LETTER = {
+  IDLE: "IDLE",
+  TYPING: "TYPING",
+  WRONG: "WRONG",
+  CORRECT: "CORRECT",
+  CORRECT_LETTER: "CORRECT_LETTER",
+};

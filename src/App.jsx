@@ -5,7 +5,7 @@ import { collection, getDocs } from "firebase/firestore";
 
 import { useEffect, useReducer } from "react";
 import { initialState, wordReducer } from "./WordReducer";
-import { colorStatus } from "./constants/constant";
+import { COLOR } from "./constants/COLOR";
 
 function App() {
   const [state, dispatch] = useReducer(wordReducer, initialState);
@@ -84,7 +84,7 @@ Grid.propTypes = {
   statusGrid: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)).isRequired,
 };
 
-const Cell = ({ value, status }) => <div className={colorStatus[status]}>{value}</div>;
+const Cell = ({ value, status }) => <div className={COLOR[status]}>{value}</div>;
 Cell.propTypes = {
   value: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,

@@ -1,5 +1,5 @@
-import { ACTIONS } from "./Actions";
-import { letterStatus } from "./constants/constant";
+import { ACTION } from "./constants/ACTION";
+import { LETTER } from "./constants/LETTER";
 
 export const initialState = {
   grid: Array(6)
@@ -7,7 +7,7 @@ export const initialState = {
     .map(() => Array(5).fill("")),
   statusGrid: Array(6)
     .fill()
-    .map(() => Array(5).fill(letterStatus.idle)),
+    .map(() => Array(5).fill(LETTER.IDLE)),
   currentRow: 0,
   currentCol: 0,
   answer: "",
@@ -16,7 +16,7 @@ export const initialState = {
 
 export const wordReducer = (state, action) => {
   switch (action.type) {
-    case ACTIONS.INPUT_LETTER: {
+    case ACTION.INPUT_LETTER: {
       const updatedGrid = JSON.parse(JSON.stringify(state.grid));
       const { currentRow, currentCol } = state;
 
@@ -37,7 +37,7 @@ export const wordReducer = (state, action) => {
         currentCol: newCol,
       };
     }
-    case ACTIONS.DELETE_LETTER: {
+    case ACTION.DELETE_LETTER: {
       const updatedGrid = JSON.parse(JSON.stringify(state.grid));
       const { currentRow } = state;
       let lastFilledCol = -1;
@@ -57,7 +57,7 @@ export const wordReducer = (state, action) => {
         currentCol: newCol,
       };
     }
-    case ACTIONS.SUBMIT_GUESS: {
+    case ACTION.SUBMIT_GUESS: {
       const updatedGrid = JSON.parse(JSON.stringify(state.grid));
       const updatedStatusGrid = JSON.parse(JSON.stringify(state.statusGrid));
 
@@ -68,18 +68,18 @@ export const wordReducer = (state, action) => {
           if (rowIndex === currentRow) {
             return updatedGrid[rowIndex].map((cell, colIndex) => {
               if (cell === answerArray[colIndex]) {
-                return letterStatus.correct;
+                return LETTER.CORRECT;
               } else if (answerArray.includes(cell)) {
-                return letterStatus.correctLetter;
+                return LETTER.CORRECT_LETTER;
               }
 
-              return letterStatus.wrong;
+              return LETTER.WRONG;
             });
           }
           return row;
         });
-        const isCorrect = updatedGrid[currentRow].join("") === state.answer;
-        if (isCorrect) {
+        const isCORRECT = updatedGrid[currentRow].join("") === state.answer;
+        if (isCORRECT) {
           return {
             ...state,
             statusGrid: newStatusGrid,
@@ -101,7 +101,7 @@ export const wordReducer = (state, action) => {
       }
       return state;
     }
-    case ACTIONS.RESET: {
+    case ACTION.RESET: {
       return {
         ...state,
         grid: Array(6)
@@ -109,13 +109,13 @@ export const wordReducer = (state, action) => {
           .map(() => Array(5).fill("")),
         statusGrid: Array(6)
           .fill()
-          .map(() => Array(5).fill(letterStatus.idle)),
+          .map(() => Array(5).fill(LETTER.IDLE)),
         currentRow: 0,
         currentCol: 0,
         gameStatus: 0,
       };
     }
-    case ACTIONS.SET_ANSWER: {
+    case ACTION.SET_ANSWER: {
       return {
         ...state,
         answer: action.answer,
