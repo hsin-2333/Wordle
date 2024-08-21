@@ -105,6 +105,12 @@ export const wordReducer = (state, action) => {
         gameStatus: 0,
       }
     }
+    case ACTIONS.SET_ANSWER:{
+      return{
+        ...state,
+        answer: action.answer
+      }
+    }
     default:
       return state;
   }

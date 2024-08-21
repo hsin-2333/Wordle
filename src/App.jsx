@@ -1,12 +1,19 @@
 import "./App.css";
 import PropTypes from "prop-types";
+import { db } from "../firebaseConfig";
+import { collection, getDocs } from "firebase/firestore";
+
 import { useEffect, useReducer } from "react";
 import { wordReducer } from "./WordReducer";
 import { letterStatus, colorStatus } from "./constants/constant";
 
 
 function App() {
-  const [state, dispatch] = useReducer(wordReducer, initialState);
+  const [state, dispatch] = useReducer(wordReducer, initialState, init);
+
+  const setAnswer = (answer) =>{
+    dispatch({ type: "SET_ANSWER", answer });
+  };
 
   const handleRestart = () => {
     dispatch({ type: "RESET" });
@@ -17,9 +24,9 @@ function App() {
       const { key } = e;
       if (key.length === 1 && /^[A-Z]$/i.test(key) && state.gameStatus === 0) {
         dispatch({ type: "INPUT_LETTER", letter: key.toUpperCase() });
-      } else if (key === "Backspace") {
+      } else if (key === "Backspace" && state.gameStatus === 0) {
         dispatch({ type: "DELETE_LETTER" });
-      } else if (key === "Enter") {
+      } else if (key === "Enter" && state.gameStatus === 0) {
         dispatch({ type: "SUBMIT_GUESS" });
       }
     };
@@ -30,6 +37,13 @@ function App() {
 
 
   }, [state.gameStatus]);
+
+  useEffect(()=>{
+    getAnswer().then((answer) => {
+      console.log("設定答案 =", answer);
+      setAnswer(answer);
+    });
+  },[state.gameStatus]);
 
   return (
     <>
@@ -79,10 +93,31 @@ const initialState = {
     .map(() => Array(5).fill(letterStatus.idle)),
   currentRow: 0,
   currentCol: 0,
-  answer: "APPLE",
+  answer: "",
   gameStatus: 0, //0: playing, 1: win, 2: lose
 };
 
 
+const init = (initialState) => {
+  return {
+    ...initialState,
+    answer: getAnswer() // 从某个函数中动态获取答案
+  };
+};
+
+
+const getAnswer = async () => {
+  try {
+    const querySnapshot = await getDocs(collection(db, "answers"));
+    const answerArray = [];
+    querySnapshot.forEach((doc)=>{
+      answerArray.push(doc.data().answer);
+    })
+    const TodayAnswer = answerArray[Math.floor(Math.random() * answerArray.length)];
+    return TodayAnswer.toUpperCase();
+  } catch (e) {
+    console.error("Error getting document:", e);
+  }
+};
 
 export default App;
