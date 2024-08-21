@@ -91,6 +91,20 @@ export const WordReducer = (state, action) => {
       }
       return state; //要更新 state 再解構
     }
+    case ACTIONS.RESET:{
+      return{
+        ...state,
+        grid: Array(6)
+        .fill()
+        .map(() => Array(5).fill("")),
+      statusGrid: Array(6)
+        .fill()
+        .map(() => Array(5).fill(letterStatus.idle)),
+        currentRow: 0,
+        currentCol: 0,
+        gameStatus: 0,
+      }
+    }
     default:
       return state;
   }

@@ -21,3 +21,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.game-font {
+  font-family: "Saira Stencil One", cursive;
+}

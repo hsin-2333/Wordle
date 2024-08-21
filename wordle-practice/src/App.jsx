@@ -4,8 +4,13 @@ import { useEffect, useReducer } from "react";
 import { WordReducer } from "./WordReducer";
 import { letterStatus, colorStatus } from "./constants/constant";
 
+
 function App() {
   const [state, dispatch] = useReducer(WordReducer, initialState);
+
+  const handleRestart = () => {
+    dispatch({ type: "RESET" });
+  };
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -22,22 +27,23 @@ function App() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
+
+
   }, [state.gameStatus]);
 
-  useEffect(() => {
-    if (state.gameStatus === 1) {
-      setTimeout(() => {
-        alert("恭喜猜對了");
-      }, 400);
-    } else if (state.gameStatus === 2) {
-      setTimeout(() => {
-        alert("QAQ 猜錯了");
-      }, 400);
-    }
-  }, [state.gameStatus]);
   return (
     <>
       <Grid className="text-3xl" grid={state.grid} statusGrid={state.statusGrid} />
+      {state.gameStatus != 0 ? (
+        <div className="absolute flex flex-col gap-6 justify-center	align-center top-0 w-full	h-full backdrop-grayscale-0 bg-black/60 ...">
+          <div className=" game-font self-stretch text-8xl text-white">Game Over</div>
+          
+          <div className="game-font text-4xl text-white" >{state.gameStatus === 2? "Maybe Try Again": "You Win!🎉🎉"}</div>
+          <button onClick={handleRestart} className=" game-font mx-auto	 w-24 h-11 text-xl text-black border-slate-500 bg-white rounded-xl">
+            Retry
+          </button>
+        </div>
+      ): null}
     </>
   );
 }
@@ -76,5 +82,7 @@ const initialState = {
   answer: "APPLE",
   gameStatus: 0, //0: playing, 1: win, 2: lose
 };
+
+
 
 export default App;
