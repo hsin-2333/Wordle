@@ -28,7 +28,7 @@ function App() {
       const { key } = e;
       if (key.length === 1 && /^[A-Z]$/i.test(key) && state.gameStatus === GAME_STATUS.PLAYING) {
         dispatch({ type: "INPUT_LETTER", letter: key.toUpperCase() });
-      } else if (key === "Backspace" && state.gameStatus === GAME_STATUS.PLAYING0) {
+      } else if (key === "Backspace" && state.gameStatus === GAME_STATUS.PLAYING) {
         dispatch({ type: "DELETE_LETTER" });
       } else if (key === "Enter" && state.gameStatus === GAME_STATUS.PLAYING) {
         dispatch({ type: "SUBMIT_GUESS" });
