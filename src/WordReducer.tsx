@@ -1,6 +1,6 @@
 import { ACTION } from "./constants/ACTION";
 import { LETTER } from "./constants/LETTER";
-import { GAME_STATUS } from "./constants/GAMESTATUS";
+import { GAME_STATUS } from "./constants/GAME_STATUS";
 
 type State = {
   grid: string[][];
@@ -31,13 +31,13 @@ type Action =
   | { type: typeof ACTION.RESET }
   | { type: typeof ACTION.SET_ANSWER; answer: string };
 
-export const wordReducer = (state, action) => {
+export const wordReducer = (state: State, action: Action) => {
   switch (action.type) {
     case ACTION.INPUT_LETTER: {
       const updatedGrid = JSON.parse(JSON.stringify(state.grid));
       const { currentRow, currentCol } = state;
 
-      if (updatedGrid[currentRow].every((letter) => letter !== "")) {
+      if (updatedGrid[currentRow].every((letter: string) => letter !== "")) {
         return state;
       }
 
@@ -80,10 +80,10 @@ export const wordReducer = (state, action) => {
 
       const { currentRow } = state;
       const answerArray = state.answer.split("");
-      if (updatedGrid[currentRow].every((letter) => letter !== "")) {
-        const newStatusGrid = updatedStatusGrid.map((row, rowIndex) => {
+      if (updatedGrid[currentRow].every((letter: string) => letter !== "")) {
+        const newStatusGrid = updatedStatusGrid.map((row: number, rowIndex: number) => {
           if (rowIndex === currentRow) {
-            return updatedGrid[rowIndex].map((cell, colIndex) => {
+            return updatedGrid[rowIndex].map((cell: string, colIndex: number) => {
               if (cell === answerArray[colIndex]) {
                 return LETTER.CORRECT;
               } else if (answerArray.includes(cell)) {
@@ -122,10 +122,10 @@ export const wordReducer = (state, action) => {
       return {
         ...state,
         grid: Array(6)
-          .fill()
+          .fill(undefined)
           .map(() => Array(5).fill("")),
         statusGrid: Array(6)
-          .fill()
+          .fill(undefined)
           .map(() => Array(5).fill(LETTER.IDLE)),
         currentRow: 0,
         currentCol: 0,

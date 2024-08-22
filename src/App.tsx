@@ -1,12 +1,11 @@
 import "./App.css";
-// import PropTypes from "prop-types";
 import { db } from "../firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 
 import React, { useEffect, useReducer } from "react";
 import { initialState, wordReducer } from "./WordReducer";
 import { COLOR } from "./constants/COLOR";
-import { GAME_STATUS } from "./constants/GAMESTATUS";
+import { GAME_STATUS } from "./constants/GAME_STATUS";
 
 type State = typeof initialState;
 type Action =
@@ -17,8 +16,8 @@ type Action =
   | { type: "SUBMIT_GUESS" };
 
 function App() {
-  const [state, dispatch] = useReducer<React.Reducer<State, Action>>(wordReducer, initialState);
-
+  // const [state, dispatch] = useReducer<React.Reducer<State, Action>>(wordReducer, initialState);
+  const [state, dispatch] = useReducer(wordReducer, initialState);
   const setAnswer = (answer: string) => {
     dispatch({ type: "SET_ANSWER", answer });
   };
@@ -92,14 +91,14 @@ const Grid = ({ grid, statusGrid }: GridProps) => {
 type GridProps = {
   className?: string;
   grid: string[][];
-  statusGrid: string[][];
+  statusGrid: (keyof typeof COLOR)[][];
 };
 
 const Cell = ({ value, status }: CellProps) => <div className={COLOR[status]}>{value}</div>;
 
 type CellProps = {
   value: string;
-  status: string;
+  status: keyof typeof COLOR;
   key: string;
 };
 
