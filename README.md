@@ -1,8 +1,4 @@
 # Wordle Practice
-
-![Game Screenshot](images/game.png)
-![Game Screenshot](images/game.png)
-
 This is a Wordle game project for practice purposes.
 
 ## Features
