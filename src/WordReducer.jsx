@@ -1,6 +1,6 @@
 import { ACTION } from "./constants/ACTION";
 import { LETTER } from "./constants/LETTER";
-import { GAME_STATUS } from "./constants/GAMESTATUS";
+import { GAME_STATUS } from "./constants/GAME_STATUS";
 
 export const initialState = {
   grid: Array(6)

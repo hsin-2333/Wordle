@@ -6,7 +6,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { useEffect, useReducer } from "react";
 import { initialState, wordReducer } from "./WordReducer";
 import { COLOR } from "./constants/COLOR";
-import { GAME_STATUS } from "./constants/GAMESTATUS";
+import { GAME_STATUS } from "./constants/GAME_STATUS";
 
 function App() {
   const [state, dispatch] = useReducer(wordReducer, initialState);
