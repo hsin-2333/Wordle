@@ -6,4 +6,4 @@ export const COLOR = {
   [LETTER.WRONG]: "w-14 h-14 bg-zinc-500	text-3xl font-black leading-14 text-white		",
   [LETTER.CORRECT]: "w-14 h-14 bg-lime-500	text-3xl font-black leading-14 text-white	",
   [LETTER.CORRECT_LETTER]: "w-14 h-14  bg-yellow-400	text-3xl font-black leading-14 text-white	",
-};
+} as const;

@@ -1,17 +1,25 @@
 import "./App.css";
-import PropTypes from "prop-types";
+// import PropTypes from "prop-types";
 import { db } from "../firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 
-import { useEffect, useReducer } from "react";
+import React, { useEffect, useReducer } from "react";
 import { initialState, wordReducer } from "./WordReducer";
 import { COLOR } from "./constants/COLOR";
 import { GAME_STATUS } from "./constants/GAMESTATUS";
 
-function App() {
-  const [state, dispatch] = useReducer(wordReducer, initialState);
+type State = typeof initialState;
+type Action =
+  | { type: "SET_ANSWER"; answer: string }
+  | { type: "RESET" }
+  | { type: "INPUT_LETTER"; letter: string }
+  | { type: "DELETE_LETTER" }
+  | { type: "SUBMIT_GUESS" };
 
-  const setAnswer = (answer) => {
+function App() {
+  const [state, dispatch] = useReducer<React.Reducer<State, Action>>(wordReducer, initialState);
+
+  const setAnswer = (answer: string) => {
     dispatch({ type: "SET_ANSWER", answer });
   };
 
@@ -19,16 +27,16 @@ function App() {
     dispatch({ type: "RESET" });
     getAnswer().then((answer) => {
       console.log("設定答案 =", answer);
-      setAnswer(answer);
+      if (answer) setAnswer(answer);
     });
   };
 
   useEffect(() => {
-    const handleKeyDown = (e) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       const { key } = e;
       if (key.length === 1 && /^[A-Z]$/i.test(key) && state.gameStatus === GAME_STATUS.PLAYING) {
         dispatch({ type: "INPUT_LETTER", letter: key.toUpperCase() });
-      } else if (key === "Backspace" && state.gameStatus === GAME_STATUS.PLAYING0) {
+      } else if (key === "Backspace" && state.gameStatus === GAME_STATUS.PLAYING) {
         dispatch({ type: "DELETE_LETTER" });
       } else if (key === "Enter" && state.gameStatus === GAME_STATUS.PLAYING) {
         dispatch({ type: "SUBMIT_GUESS" });
@@ -43,7 +51,7 @@ function App() {
   useEffect(() => {
     getAnswer().then((answer) => {
       console.log("設定答案 =", answer);
-      setAnswer(answer);
+      if (answer) setAnswer(answer);
     });
   }, []);
 
@@ -69,32 +77,36 @@ function App() {
   );
 }
 
-const Grid = ({ grid, statusGrid }) => {
+const Grid = ({ grid, statusGrid }: GridProps) => {
   return (
     <div className="grid grid-cols-5 gap-3 w-80 h-96">
       {grid.map((row, rowIndex) =>
         row.map((cell, colIndex) => (
-          <Cell key={`${rowIndex}-${colIndex}`} status={statusGrid[rowIndex][colIndex]} value={cell}></Cell>
+          <Cell key={`${rowIndex}-${colIndex}`} status={statusGrid[rowIndex][colIndex]} value={cell} />
         ))
       )}
     </div>
   );
 };
-Grid.propTypes = {
-  grid: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)).isRequired,
-  statusGrid: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)).isRequired,
+
+type GridProps = {
+  className?: string;
+  grid: string[][];
+  statusGrid: string[][];
 };
 
-const Cell = ({ value, status }) => <div className={COLOR[status]}>{value}</div>;
-Cell.propTypes = {
-  value: PropTypes.string.isRequired,
-  status: PropTypes.string.isRequired,
+const Cell = ({ value, status }: CellProps) => <div className={COLOR[status]}>{value}</div>;
+
+type CellProps = {
+  value: string;
+  status: string;
+  key: string;
 };
 
-const getAnswer = async () => {
+const getAnswer = async (): Promise<string | undefined> => {
   try {
     const querySnapshot = await getDocs(collection(db, "answers"));
-    const answerArray = [];
+    const answerArray: string[] = [];
     querySnapshot.forEach((doc) => {
       answerArray.push(doc.data().answer);
     });

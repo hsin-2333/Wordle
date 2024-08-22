@@ -4,4 +4,4 @@ export const ACTION = {
   SUBMIT_GUESS: "SUBMIT_GUESS",
   RESET: "RESET",
   SET_ANSWER: "SET_ANSWER",
-};
+} as const;

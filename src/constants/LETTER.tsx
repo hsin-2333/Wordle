@@ -4,4 +4,4 @@ export const LETTER = {
   WRONG: "WRONG",
   CORRECT: "CORRECT",
   CORRECT_LETTER: "CORRECT_LETTER",
-};
+} as const;

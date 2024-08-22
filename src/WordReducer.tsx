@@ -2,18 +2,34 @@ import { ACTION } from "./constants/ACTION";
 import { LETTER } from "./constants/LETTER";
 import { GAME_STATUS } from "./constants/GAMESTATUS";
 
-export const initialState = {
+type State = {
+  grid: string[][];
+  statusGrid: string[][];
+  currentRow: number;
+  currentCol: number;
+  answer: string;
+  gameStatus: number;
+};
+
+export const initialState: State = {
   grid: Array(6)
-    .fill()
+    .fill(undefined)
     .map(() => Array(5).fill("")),
   statusGrid: Array(6)
-    .fill()
+    .fill(undefined)
     .map(() => Array(5).fill(LETTER.IDLE)),
   currentRow: 0,
   currentCol: 0,
   answer: "",
   gameStatus: GAME_STATUS.PLAYING,
 };
+
+type Action =
+  | { type: typeof ACTION.INPUT_LETTER; letter: string }
+  | { type: typeof ACTION.DELETE_LETTER }
+  | { type: typeof ACTION.SUBMIT_GUESS }
+  | { type: typeof ACTION.RESET }
+  | { type: typeof ACTION.SET_ANSWER; answer: string };
 
 export const wordReducer = (state, action) => {
   switch (action.type) {
