@@ -2,18 +2,10 @@ import "./App.css";
 import { db } from "../firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 
-import React, { useEffect, useReducer } from "react";
+import { useEffect, useReducer } from "react";
 import { initialState, wordReducer } from "./WordReducer";
 import { COLOR } from "./constants/COLOR";
 import { GAME_STATUS } from "./constants/GAME_STATUS";
-
-type State = typeof initialState;
-type Action =
-  | { type: "SET_ANSWER"; answer: string }
-  | { type: "RESET" }
-  | { type: "INPUT_LETTER"; letter: string }
-  | { type: "DELETE_LETTER" }
-  | { type: "SUBMIT_GUESS" };
 
 function App() {
   // const [state, dispatch] = useReducer<React.Reducer<State, Action>>(wordReducer, initialState);
@@ -56,7 +48,7 @@ function App() {
 
   return (
     <>
-      <Grid className="text-3xl" grid={state.grid} statusGrid={state.statusGrid} />
+      <Grid grid={state.grid} statusGrid={state.statusGrid} />
       {state.gameStatus !== GAME_STATUS.PLAYING && (
         <div className="absolute flex flex-col gap-6 justify-center	align-center top-0 w-full	h-full backdrop-grayscale-0 bg-black/60 ...">
           <div className=" game-font self-stretch text-8xl text-white">Game Over</div>
@@ -89,7 +81,6 @@ const Grid = ({ grid, statusGrid }: GridProps) => {
 };
 
 type GridProps = {
-  className?: string;
   grid: string[][];
   statusGrid: (keyof typeof COLOR)[][];
 };

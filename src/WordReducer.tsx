@@ -1,15 +1,7 @@
 import { ACTION } from "./constants/ACTION";
 import { LETTER } from "./constants/LETTER";
 import { GAME_STATUS } from "./constants/GAME_STATUS";
-
-type State = {
-  grid: string[][];
-  statusGrid: string[][];
-  currentRow: number;
-  currentCol: number;
-  answer: string;
-  gameStatus: number;
-};
+import State from "./types/state";
 
 export const initialState: State = {
   grid: Array(6)
@@ -119,18 +111,7 @@ export const wordReducer = (state: State, action: Action) => {
       return state;
     }
     case ACTION.RESET: {
-      return {
-        ...state,
-        grid: Array(6)
-          .fill(undefined)
-          .map(() => Array(5).fill("")),
-        statusGrid: Array(6)
-          .fill(undefined)
-          .map(() => Array(5).fill(LETTER.IDLE)),
-        currentRow: 0,
-        currentCol: 0,
-        gameStatus: GAME_STATUS.PLAYING,
-      };
+      return initialState;
     }
     case ACTION.SET_ANSWER: {
       return {
