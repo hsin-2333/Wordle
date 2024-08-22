@@ -1,7 +1,9 @@
 # Wordle Practice
 
-![Game Screenshot](images/game.png)
-![Game Screenshot](images/game.png)
+<p align="center">
+  <img src="images/game.png" alt="Game Screenshot" width="45%" />
+  <img src="images/gameOver.png" alt="Game Over Screenshot" width="45%" />
+</p>
 
 This is a Wordle game project for practice purposes.
 
